@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--            命名空间用于查找 -->
+<mapper namespace="demo">
+   
+   
+    
+<!--替代，语句中的内容,简写 -->
+    <sql id="cols">
+         id,name,sn,description      
+    </sql>
+    
+<!--查询所有记录 -->
+    <select id="listAll" resultType="entity.Person">
+        select <include refid="cols"/> from   person      
+    </select>
+
+<!--查询一个用户 -->                            <!--  别名替代，简写-->
+    <select id="getOne" parameterType="string" resultType="entity.Person">
+        select <include refid="cols"/> from   person  where id= #{id}    
+    </select>
+    
+<!--插入一个用户 -->
+    <insert id="insertOne" parameterType="entity.Person" >
+        insert into person( <include refid="cols"/> ) values (#{id},#{name},#{sn},#{description})    
+    </insert>
+    
+<!--更新一个用户 -->
+    <insert id="updateOne" parameterType="entity.Person" >
+        update person set name=#{name},sn=#{sn},description=#{description} where id=#{id}    
+    </insert>
+
+	<!--删除一个用户 -->
+    <update id="deleteOne" parameterType="entity.Person" >
+        delete from person where id= #{id}   
+    </update>
+</mapper>

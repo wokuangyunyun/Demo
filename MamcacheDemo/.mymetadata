@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="MamcacheDemo"
+  id="myeclipse.1431596781854"
+  context-root="/MamcacheDemo"
+  j2ee-spec="6.0"
+  archive="MamcacheDemo.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

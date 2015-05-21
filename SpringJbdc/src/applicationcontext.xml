@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<!--  Spring配置文件的DTD定义-->  
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"  
+"http://www.springframework.org/dtd/spring-beans.dtd">  
+<!--  Spring配置文件的根元素是beans-->  
+<beans>  
+    <!--定义数据源,该bean的ID为dataSource-->  
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">  
+        <!--  指定数据库驱动-->  
+        <property name="driverClassName"><value>com.mysql.jdbc.Driver</value></property>  
+        <!--  指定连接数据库的URL-->                    
+        <property name="url"><value>jdbc:mysql://localhost:3306/mydb</value></property>  
+        <!--  root为数据库的用户名-->  
+        <property name="username"><value>root</value></property>  
+        <!--  pass为数据库密码-->  
+        <property name="password"><value>123456</value></property>  
+    </bean> 
+    
+    
+     <bean id="studentService" class="demo.StudentService">
+         <property name="dataSource" ref="dataSource"></property>
+     </bean>
+
+</beans>

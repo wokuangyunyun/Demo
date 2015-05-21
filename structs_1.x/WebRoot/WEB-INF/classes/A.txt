@@ -1,0 +1,176 @@
+<%@page import="com.lineteam.util.BeanUtils"%>
+<%@page import="com.lineteam.util.StringUtils"%>
+<%@page import="com.entity.TSysFuncs"%>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ page import="com.entity.TSysUsers"%>
+<%@ page import="com.lineteam.common.HtmlUtil"%>
+<%@ page import="com.business.system.SystemUtils"%>
+<%@ page import="com.lineteam.ajax.DefaultPageAjax"%>
+<%@ page import="com.ajax.member.UserFeedBackAjax"%>
+<%@ include file="/inc/begin.inc" %>
+<%@ include file="/common/check-login.jsp"%>
+<%
+	//判断用户权限
+	if(!SystemUtils.canVisit(loginUserId, "user-feedback", request)){
+		response.sendRedirect(rootPath + "/error/404.jsp");
+		return;
+	}
+	DefaultPageAjax thisPage = new DefaultPageAjax(request, response);
+	String itemId = thisPage.getParam("itemId");
+	Map map = UserFeedBackAjax.getReportInfo(itemId);
+	if(map.isEmpty()){
+		response.sendRedirect(rootPath + "/error/404.jsp");
+		return;
+	}
+	
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>51高清秀场 - 后台管理系统</title>
+    <jsp:include flush="true" page="/common/head.jsp"></jsp:include>
+    <script type="text/javascript">
+    $(document).ready(function(){
+   		$("#results").val("<%=BeanUtils.getPropertyStr(map, "RESULTS")%>");
+    });
+    </script>
+</head>
+<body class='contrast-blue '>
+	<!-- 头部开始 -->
+	<jsp:include flush="true" page="/common/top.jsp">
+      	<jsp:param name="UserName" value="<%=loginUserName %>"/>
+      	<jsp:param name="NickName" value="<%=loginNickName %>"/>
+	</jsp:include>
+ 	<!-- //头部结束 -->
+<div id='wrapper'>
+    <!-- //左侧菜单开始 -->
+ 	<jsp:include flush="true" page="/common/left.jsp">
+    		<jsp:param name="ul" value="member"/>
+   			<jsp:param name="li" value="user-feedback"/>
+   		</jsp:include>
+    <!-- //左侧菜单结束 -->
+    <section id='content'>
+        <div class='container-fluid'>
+            <div class='row-fluid' id='content-wrapper'>
+                <div class='span12'>
+                    <div class='row-fluid'>
+                        <div class='span12'>
+                            <div class='page-header'>
+                                <h1 class='pull-left'>
+                                    <i class='icon-edit'></i>
+                                    <span>编辑用户反馈信息</span>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row-fluid'>
+                        <div class='span12 box'>
+                        	<jsp:include flush="true" page="/common/modal.jsp">
+                        		<jsp:param name="msg-error" value="编辑用户反馈信息失败！"/>
+ 								<jsp:param name="msg-success" value="编辑用户反馈信息成功！"/>
+                        	</jsp:include>
+                            <div class='box-header blue-background'>
+                                <div class='title'>用户反馈信息</div>
+                            </div>
+                             <div class='box-content'>
+                                <form class='form form-horizontal' style='margin-bottom: 0;' id='myForm' name='myForm'>
+	                                <input type="hidden" name="$OPTYPE$" value="edit" />
+	                                <input type="hidden" name="itemId" value="<%=BeanUtils.getPropertyStr(map, "ITEMID") %>" />
+	                                <input type="hidden" name="loginUserName" value="<%=loginUserName %>" />
+                                    <div class='control-group'>
+                                        <label class='control-label' for='userid'><span class="help-inline text-error">*</span> 反馈人：</label>
+                                        <div class='controls'>
+                                            <input id='userid' name='userid' type='text' value="<%=BeanUtils.getPropertyStr(map, "USERID") %>" disabled="disabled">
+                                        </div>
+                                    </div>
+                                    <div class='control-group'>
+                                        <label class='control-label' for='report_desc'><span class="help-inline text-error">*</span> 反馈内容：</label>
+                                        <div class='controls'>
+                                        	<textarea rows="3" cols="" name="report_desc" id="report_desc" disabled="disabled"><%=BeanUtils.getPropertyStr(map, "REPORT_DESC") %></textarea>
+                                        </div>
+                                    </div>
+                                    <div class='control-group'>
+                                        <label class='control-label' for='report_user'><span class="help-inline text-error">*</span> 被反馈人</label>
+                                        <div class='controls'>
+                                            <input id='report_user' name='report_user' type='text' value="<%=BeanUtils.getPropertyStr(map, "REPORT_USER") %>" disabled="disabled">
+                                        </div>
+                                    </div>
+                                    <div class='control-group'>
+                                        <label class='control-label' for='func_icon'><span class="help-inline text-error">*</span>反馈房间</label>
+                                        <div class='controls'>
+                                            <input id='roomid' name='roomid' type='text' value="<%=BeanUtils.getPropertyStr(map, "ROOMID") %>" disabled="disabled">
+                                        </div>
+                                    </div>
+                                    <div class='control-group'>
+                                        <label class='control-label' for='func_power'><span class="help-inline text-error">*</span> 反馈时间</label>
+                                        <div class='controls'>
+                                            <input id='CreateTime' name='CreateTime' type='text' value="<%=BeanUtils.getPropertyStr(map, "CREATETIME") %>" disabled="disabled">
+                                        </div>
+                                    </div>
+                                    <div class='control-group'>
+                                        <label class='control-label' for='results'><span class="help-inline text-error">*</span> 处理结果</label>
+                                        <div class='controls'>
+                                        	 <select id="results" name="results" >
+                                                <option value="警告" >警告</option>
+                                                <option value="禁播1周" >禁播1周</option>
+                                                <option value="永久禁播" >永久禁播</option>
+                                                <option value="初始化资料" >初始化资料</option>
+                                                <option value="封号" >封号</option>
+                                                <option value="虚假信息" >虚假信息</option>
+                                                <option value="前端不显示" >前端不显示</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                      <div class='control-group'>
+                                        <label class='control-label' for='results_desc'> 处理说明</label>
+                                        <div class='controls'>
+                                        	<textarea rows="3" cols="" name="results_desc" id="results_desc"><%=BeanUtils.getPropertyStr(map, "RESULTS_DESC") %></textarea>
+                                        </div>
+                                    </div>
+                                      <div class='control-group'>
+                                        <label class='control-label' for='handle'><span class="help-inline text-error">*</span> 处理人</label>
+                                        <div class='controls'>
+                                            <input id='handle' name='handle' type='text' value="<%=BeanUtils.getPropertyStr(map, "HANDLE") %>" disabled="disabled">
+                                        </div>
+                                    </div>
+                                      <div class='control-group'>
+                                        <label class='control-label' for='handle_time'><span class="help-inline text-error">*</span> 处理时间</label>
+                                        <div class='controls'>
+                                            <input id='handle_time' name='handle_time' type='text' value="<%=BeanUtils.getPropertyStr(map, "HANDLE_TIME") %>" disabled="disabled">
+                                        </div>
+                                    </div>
+                                    <div class='form-actions' style='margin-bottom:0'>
+                                        <button class='btn btn-primary  btn-large' type='submit'><i class='icon-save'></i> 保存</button>
+                                        <a id="editBack" class='btn btn-primary btn-large' href="javascript:history.go(-1);">返回</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+	<script type="text/javascript">
+	    function afterSave(jsonStr){
+			var json = $.parseJSON(getResponseText(jsonStr));
+			if(json.status){
+				window.location.href = "userFeedBack.jsp";
+			}else {
+				$("#modalError").fadeToggle("slow");
+			}
+		}
+    	$(document).ready(function(){
+    		$("#myForm").validate({
+    			submitHandler : function(form){
+    	            executeObject("myForm", afterSave, "com.ajax.member.UserFeedBackAjax", "执行中,请稍候...");
+    	        }, rules : {
+    	     
+    	        }
+			});
+    	});
+    </script>
+</body>
+</html>
+<%@ include file="/inc/end.inc"%>

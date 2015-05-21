@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="JettyServer"
+  id="myeclipse.1431934168864"
+  context-root="/JettyServer"
+  j2ee-spec="5.0"
+  archive="JettyServer.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

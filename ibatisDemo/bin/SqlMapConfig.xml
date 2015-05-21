@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<properties resource="SqlMap.properties" />
+	<transactionManager type="JDBC">
+		<dataSource type="C3P0">
+			<property name="JDBC.Driver" value="${driver}" />
+			<property name="JDBC.ConnectionURL" value="${url}" />
+			<property name="JDBC.Username" value="${username}" />
+			<property name="JDBC.Password" value="${password}" />
+			<property name="initialPoolSize" value="10" />
+			<property name="maxPoolSize" value="100" />
+			<property name="minPoolSize" value="10" />
+			<property name="acquireIncrement" value="5" />
+			<property name="maxIdleTime" value="3600" />
+			<property name="maxIdleTimeExcessConnections" value="1200" />
+			<property name="maxConnectionAge" value="27000" />
+			<property name="maxStatements" value="500" />
+			<property name="maxStatementsPerConnection" value="50" />
+			<property name="numHelperThreads" value="5" />
+		</dataSource>
+	</transactionManager>
+	<sqlMap resource="entity/Person.xml" />
+</sqlMapConfig>

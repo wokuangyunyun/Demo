@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd    
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd    
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd    
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	<description>springApp</description>
+	<!-- dataSource for MySQL -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/mydb" />
+		<property name="username" value="root" />
+		<property name="password" value="123456" />
+	</bean>
+
+	<bean id="TransactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!--1:配置一个JdbcTemplate实例，并将这个“共享的”，“安全的”实例注入到不同的DAO类中去 -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="actorJdbcTemplateDao" class="com.logcd.bo.dao.impl.ActorJdbcTemplateDaoImpl">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
+
+	<!--2:将共享的DataSource实例注入到DAO中，JdbcTemplate实例在DataSource的setter方法中被创建 -->
+	<bean id="actorEventDao" class="com.logcd.bo.dao.impl.ActorEventDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!--利用了拦截器的原理。 -->
+	<bean id="transactionInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<!-- 配置事务属性 -->
+		<property name="transactionAttributes">
+			<props>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="operate*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="update*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="save*">PROPAGATION_REQUIRED</prop>
+				<prop key="find*">PROPAGATION_REQUIRED,readOnly</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="txProxy"
+		class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="beanNames">
+			<list>
+				<value>*Dao*</value><!--只是为了测试，一般为service -->
+			</list>
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+
+
+
+	<bean id="nativeJdbcExtractor"
+		class="org.springframework.jdbc.support.nativejdbc.CommonsDbcpNativeJdbcExtractor"
+		lazy-init="true" />
+
+	<bean id="lobHandler" class="org.springframework.jdbc.support.lob.OracleLobHandler"
+		lazy-init="true" p:nativeJdbcExtractor-ref="nativeJdbcExtractor" />
+
+	<bean id="defaultLobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler"
+		lazy-init="true" />
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate"
+		p:dataSource-ref="appDS" p:nativeJdbcExtractor-ref="nativeJdbcExtractor" />
+
+	<bean id="txMangager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+		p:dataSource-ref="appDS" />
+
+	<tx:annotation-driven transaction-manager="txMangager"
+		proxy-target-class="true" />
+
+	<!-- 以表方式产生主键值 在Mysql中创建一张用于维护t_post主键的t_post_id表，以下是创建该表及插入初始化的SQL脚本： create 
+		table t_post_id(sequence_id int) type = MYISAM; insert into t_post_id values(0); -->
+
+	<!-- 由于主键维护表的并发访问量很大，所以最好将其声明为MYISAM类型，此外需要为该表提供初始值，以便后续主键值在此之上进行递增。 调整为MySql数据库后，我们仅需要对Spring配置进行小小的调整就可以了： -->	
+	<bean id="incre"
+		class="org.springframework.jdbc.support.incrementer.MySQLMaxValueIncrementer">
+		<!-- ①设置维护主键的表名 -->
+		<property name="incrementerName" value="t_post_id" />
+		<!-- ②用于生成主键值的列名 -->
+		<property name="columnName" value="sequence_id" />
+		<!-- ③缓存大小 -->
+		<property name="cacheSize" value="10" />
+		
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="postDao" parent="dao" class="com.baobaotao.dao.jdbc.PostJdbcDao">
+		<property name="lobHandler" ref="defaultLobHandler" />
+		<property name="incre" ref="incre" />
+	</bean>
+	
+
+</beans> 

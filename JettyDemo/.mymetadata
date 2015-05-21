@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="JettyDemo"
+  id="myeclipse.1431928481417"
+  context-root="/JettyDemo"
+  j2ee-spec="5.0"
+  archive="JettyDemo.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+                        http://www.springframework.org/schema/tx 
+                        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd 
+                        http://www.springframework.org/schema/aop 
+                        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd ">
+	<!-- 使用c3p0连接MS SQL Server 2005的数据源 -->
+	<bean id="c3p0MSSQLServerDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver">
+		</property>
+		<property name="jdbcUrl"
+			value="jdbc:mysql://127.0.0.1:3306/mydb">
+		</property>
+		<property name="user" value="root"></property>
+		<property name="password" value="123456"></property>
+		<property name="maxPoolSize" value="40"></property>
+		<property name="minPoolSize" value="1"></property>
+		<property name="initialPoolSize" value="1"></property>
+		<property name="maxIdleTime" value="20"></property>
+	</bean>
+	<!-- Hibernate数据访问会话工厂 -->
+<!-- 	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="c3p0MSSQLServerDataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				以下为使用proxool数据库连接池的配置 有异常，未调试完毕
+				<prop key="hibernate.connection.provider_class"> org.hibernate.connection.ProxoolConnectionProvider 
+					</prop> <prop key="hibernate.proxool.pool_alias"> dbProxool </prop> <prop 
+					key="hibernate.proxool.xml"> proxool-config.xml </prop>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.SQLServerDialect
+				</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+
+				<value>net/itsalon/entity/Users.hbm.xml</value>
+				<value>net/itsalon/entity/City.hbm.xml</value>
+				<value>net/itsalon/entity/Province.hbm.xml</value>
+				<value>net/itsalon/entity/ManagerPower.hbm.xml</value>
+				<value>net/itsalon/entity/Manager.hbm.xml</value>
+				<value>net/itsalon/entity/WebSite.hbm.xml</value>
+				<value>net/itsalon/entity/BbsTopicOperation.hbm.xml</value>
+				<value>net/itsalon/entity/BbsComment.hbm.xml</value>
+				<value>net/itsalon/entity/BbsSessionType.hbm.xml</value>
+				<value>net/itsalon/entity/BbsUsers.hbm.xml</value>
+				<value>net/itsalon/entity/BbsSession.hbm.xml</value>
+				<value>net/itsalon/entity/BbsSessionMaster.hbm.xml</value>
+				<value>net/itsalon/entity/BbsCollection.hbm.xml</value>
+				<value>net/itsalon/entity/BbsUsersType.hbm.xml</value>
+				<value>net/itsalon/entity/BbsTopicType.hbm.xml</value>
+				<value>net/itsalon/entity/BbsTopic.hbm.xml</value>
+				<value>net/itsalon/entity/BbsInfo.hbm.xml</value>
+				<value>net/itsalon/entity/BbsGrade.hbm.xml</value>
+			</list>
+		</property>
+	</bean> -->
+	<!-- 事务管理 -->
+<!-- 	<bean id="hibTransactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<tx:advice id="tranAdvice" transaction-manager="hibTransactionManager">
+		<tx:attributes>
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="do*" propagation="REQUIRED" />
+			<tx:method name="*" propagation="SUPPORTS" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut id="serviceMethods"
+			expression="execution(* net.itsalon.*.service.*.*(..))" />
+		<aop:advisor advice-ref="tranAdvice" pointcut-ref="serviceMethods" />
+	</aop:config>
+
+	导入用户管理模块bean
+	<import resource="beans-manager.xml" />
+	导入论坛模块bean
+	<import resource="beans-bbs.xml" /> -->
+</beans>

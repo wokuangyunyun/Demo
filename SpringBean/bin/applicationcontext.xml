@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<!--  Spring配置文件的DTD定义-->  
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"  
+"http://www.springframework.org/dtd/spring-beans.dtd">  
+<!--  Spring配置文件的根元素是beans-->  
+<beans>  
+    <!--定义数据源,该bean的ID为dataSource-->  
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">  
+        <!--  指定数据库驱动-->  
+        <property name="driverClassName"><value>com.mysql.jdbc.Driver</value></property>  
+        <!--  指定连接数据库的URL-->                    
+        <property name="url"><value>jdbc:mysql://localhost:3306/mydb</value></property>  
+        <!--  root为数据库的用户名-->  
+        <property name="username"><value>root</value></property>  
+        <!--  pass为数据库密码-->  
+        <property name="password"><value>123456</value></property>  
+    </bean> 
+    
+    <bean id = "cp"  class = "demo.ConectionProvider" init-method="init" destroy-method="destroy">
+        <property name="ds" ref="dataSource"></property>
+    </bean>
+  
+<!--<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">  
+        <property name="dataSource"><ref local="dataSource"/></property>  
+        <property name="mappingResources">  
+            <list>  
+                <value>lee/Person.hbm.xml</value>  
+            </list>  
+        </property>  
+        <property name="hibernateProperties">  
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>  
+                <prop key="hibernate.hbm2ddl.auto">update</prop>  
+            </props>  
+        </property>  
+    </bean>  
+   
+    <bean id="personDao" class="lee.PersonDaoImpl">  
+        <property name="sessionFactory"><ref local="sessionFactory"/></property>  
+    </bean>    -->
+    
+</beans>

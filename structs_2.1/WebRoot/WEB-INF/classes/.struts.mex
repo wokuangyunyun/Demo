@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="default" location="24,388" size="717,162">
+    <action name="XXXXX" location="12,112" size="150,41">
+      <result name="xxx">
+        <resourceEdge source="xxx" routing="0" target="xxx.jsp" />
+      </result>
+    </action>
+  </package>
+  <webResource name="showcase.jsp" path="showcase.jsp" location="579,570" size="150,55" />
+  <webResource name="viewSource.jsp" path="viewSource.jsp" location="334,290" size="150,55" />
+  <webResource name="date.jsp" path="/date.jsp" location="89,570" size="150,55" />
+  <webResource name="listSkills.jsp" path="/empmanager/listSkills.jsp" location="579,10" size="150,55" />
+  <webResource name="editSkill.jsp" path="/empmanager/editSkill.jsp" location="1279,290" size="150,55" />
+  <webResource name="listEmployees.jsp" path="/empmanager/listEmployees.jsp" location="894,290" size="150,55" />
+  <webResource name="editEmployee.jsp" path="/empmanager/editEmployee.jsp" location="614,745" size="150,55" />
+  <webResource name="xxx.jsp" path="/xxx.jsp" location="59,1400" size="150,55" />
+</Struts2Diagram>
+
